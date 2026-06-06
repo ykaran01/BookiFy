@@ -17,7 +17,7 @@ import { increment, decrement, add } from '../../Redux/features/CartSlice'
 import { useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { search } from '../componestsImp/service/service.js'
-
+import {showErrorToast} from "../../helper/toast.helper.js"
 export default function AppSidebar() {
   const [books, setbooks] = useState([])
   const [sortOrder, setSortOrder] = useState(null)
@@ -29,11 +29,12 @@ export default function AppSidebar() {
   
   useEffect(() => {
     if (!query.trim() && selectedCategory === null) {
+
       return;
     }
     const timer = setTimeout(async () => {
       const data = await search({ sortOrder, selectedCategory, query })
-      console.log(data)
+      
       setbooks(data || [])
     }, 600)
     return () => clearTimeout(timer)
@@ -44,7 +45,7 @@ export default function AppSidebar() {
   const handleAddToCart = (book) => {
     const maxAvailableStock = book.stock || 5;
     if (maxAvailableStock <= 0) {
-      alert("This item is currently out of stock!");
+      showErrorToast("Cannot add this item. Out of stock.");
       return;
     }
     dispatch(add(book))
@@ -52,7 +53,7 @@ export default function AppSidebar() {
 
   const handleIncrement = (bookId, currentQty, maxStock) => {
     if (currentQty >= maxStock) {
-      alert("Cannot add more items. Stock limit reached!");
+      showErrorToast("Cannot add more items. Maximum stock limit reached.");
       return;
     }
     dispatch(increment(bookId))

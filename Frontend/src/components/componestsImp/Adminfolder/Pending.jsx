@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { getorders } from "./service/service";
 import { changeOrderStatus } from "./service/service";
+import {showSuccessToast, showErrorToast} from "../../../helper/toast.helper.js"
 const Pending = () => {
   const [orders, setOrders] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("confirmed");
   const fetchOrders = async () => {
     try {
       const data = await getorders();
       setOrders(  data.data || []);
     } catch (err) {
-      console.error(err.message);
+      showErrorToast("Failed to fetch pending orders.");
     }
   };
 
@@ -19,15 +20,14 @@ const Pending = () => {
   const handleStatusChange = async (orderId, newStatus) => {
     try {  
       if (!newStatus) {
-        alert("Please select a status before submitting.");
+        showErrorToast("Please select a status to update.");
         return;
       }
       await changeOrderStatus(orderId, newStatus)
-      alert("Order status updated successfully!");
+      showSuccessToast("Order status updated successfully.");
       fetchOrders(); 
     } catch (err) {
-      console.error(err.message);
-      alert("Failed to update order status. Please try again.");
+      showErrorToast("Failed to update order status.");
     }
 
   }

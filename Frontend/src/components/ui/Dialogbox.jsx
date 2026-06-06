@@ -17,10 +17,10 @@ const STATES = [
     "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
     "Uttar Pradesh", "Uttarakhand", "West Bengal"
 ];
-
-const Dialogbox = () => {
+import { showErrorToast } from "../../helper/toast.helper.js";
+const Dialogbox = async () => {
     const user  =  useUser()
-    let name = user.user.fullName
+    const name =  user.user.fullName
     const navigate = useNavigate();
     const [Address,setAddress] = useState({
         street:"",
@@ -38,16 +38,18 @@ const Dialogbox = () => {
     const handleSubmit = async()=>{
         try{
             if(!Address.city || !Address.state || !Address.pincode || !Address.street){
-                alert('Add the correct Number')
-        }
-        if(!phoneNumber || phoneNumber.length!=10){
-            alert('Fill The Phone Number')
-        }
-        
+                showErrorToast('Please fill in all address fields.')
+                return;
+            }
+            if(!phoneNumber || phoneNumber.length!=10){
+                showErrorToast('Please enter a valid 10-digit phone number.')
+                return;
+            }
+            
         await placeorder(Address,phoneNumber)
        
         }catch(err){
-            console.log(err.message)
+            showErrorToast("Failed to place order. Please try again.")
         }
         
     }

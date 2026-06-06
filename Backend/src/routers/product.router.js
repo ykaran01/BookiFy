@@ -5,9 +5,9 @@ import { addProducts, deleteProduct, getAllProducts, getProductById, getProducts
 const productrouter = Router();
 productrouter.post('/add',  requireAdmin, upload.single('image'), addProducts)
 productrouter.put('/update/:id', requireAdmin, updateProduct);
-productrouter.get('/all',  getAllProducts);
+productrouter.get('/all', getAllProducts);
 productrouter.get('/get/:categoryId', requireAuth, getProductsByCategory)
 productrouter.get('/getproduct/:id', requireAuth, getProductById)
-productrouter.get('/search', requireAuth,searchProducts)
+productrouter.get('/search', searchProducts)
 productrouter.delete('/delete/:id', requireAdmin, deleteProduct)
 export default productrouter

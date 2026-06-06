@@ -1,4 +1,5 @@
 import React, { useRef } from 'react'
+import { ToastContainer } from 'react-toastify';
 import { Routes, Route, Link } from 'react-router-dom'
 import Signin from './Login/Signin.jsx'
 import Signup from './Login/Signup.jsx'
@@ -16,6 +17,7 @@ const App = () => {
   return (
 
     <div>
+      <ToastContainer />
       <Routes>
         <Route element={
           <SidebarLayout />
@@ -35,6 +37,7 @@ const App = () => {
 
 
       </Routes>
+      <ToastContainer />
     </div>
   )
 }

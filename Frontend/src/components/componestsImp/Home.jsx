@@ -10,7 +10,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { increment, decrement, add } from '../../Redux/features/CartSlice'
 import { fetchCart } from "../../Redux/features/CartSlice";
 import { fetchCategory } from "../../Redux/features/CategorySlice";
-
+import { showErrorToast } from "../../helper/toast.helper.js";
 export default function Home() {
   const [books, setBooks] = useState([]);
   
@@ -30,7 +30,7 @@ export default function Home() {
   const incrementQuantity = (id, currentQty, maxStock) => {
    
     if (currentQty >= maxStock) {
-      alert("Cannot add more items. Stock limit reached!");
+      showErrorToast("Cannot add more items. Maximum stock limit reached.");
       return;
     }
     dispatch(increment(id))

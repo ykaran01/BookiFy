@@ -70,7 +70,6 @@ export const getProductById = asyncHandeler(async (req, res) => {
     if (!product) throw new ApiError(404, 'Product Not Found');
     res.status(200).json(new Apiresponse(200, product, 'Product fetched'));
 });
-
 export const deleteProduct = asyncHandeler(async (req, res) => {
     const product = await productModule.findOneAndDelete({ _id: req.params.id });
     if (!product) throw new ApiError(404, 'Product Not Found or Unauthorized');
@@ -102,23 +101,6 @@ export const updateProduct = asyncHandeler(async (req, res) => {
     res.status(200).json(new Apiresponse(200, null, 'Product updated'));
 }
 );
-
-export const changeQuantity = asyncHandeler(async (req, res) => {
-    const { products } = req.body;
-    for (const item of products) {
-        const qty = Number(item.quantity);
-
-        let updateQuery = {
-            $inc: {
-                quantity: item.change ? qty : -qty
-            }
-        };
-        await productModule.findByIdAndUpdate(item._id, updateQuery);
-    }
-    res.json(
-        new Apiresponse(200, null, "Quantity updated")
-    );
-});
 export const getAllProducts = asyncHandeler(async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
 

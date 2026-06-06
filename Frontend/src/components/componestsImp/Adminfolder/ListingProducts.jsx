@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"; 
-
+import { showErrorToast, showSuccessToast } from '@/helper/toast.helper.js';
 const ListingProducts = () => {
   const [books, setBooks] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -29,7 +29,7 @@ const ListingProducts = () => {
         const data = await fetchProducts();
         setBooks(data);
       } catch (err) {
-        console.error("Failed to load products:", err);
+        showErrorToast("Failed to fetch products.");
       }
     };
     loadProducts();
@@ -39,9 +39,11 @@ const ListingProducts = () => {
     deleteProduct(id)
       .then(() => {
         setBooks(books.filter((items) => items._id !== id));
+        showSuccessToast("Product deleted successfully.");
       })
+
       .catch((err) => {
-        console.error(err);
+        showErrorToast("Failed to delete product.");
       });
   };
 
@@ -71,9 +73,10 @@ const ListingProducts = () => {
     try {
       await updateProduct(selectedBookId, editFormData);
       setIsOpen(false); 
+      showSuccessToast("Product updated successfully.");
       window.location.reload()
     } catch (err) {
-      console.error("Failed to update book:", err);
+      showErrorToast("Failed to update product.");
     }
   };
 

@@ -55,7 +55,7 @@ const AdminSidebar = () => {
           <SidebarGroupContent>
 
             <div className="flex flex-col w-full" >
-              {items.map((item, index) => (
+              {items.map((item) => (
                <Link  to={item.link}  className="w-full" > <button
                   className="
                       group

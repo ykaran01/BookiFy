@@ -3,6 +3,7 @@ import Navbar from '../Navbar'
 import { getAllOrders } from './service/service.js'
 import { useEffect } from 'react'
 import { getTheinformation } from './service/service.js'
+import { showErrorToast, showSuccessToast } from '@/helper/toast.helper.js';
 const Adminpanel = () => {
   const [response, setResponse] = React.useState([])
   const [info, setInfo] = React.useState([])
@@ -11,18 +12,20 @@ const Adminpanel = () => {
       try {
         const response  =  await getAllOrders()
         setInfo(response)
+        showSuccessToast("Orders fetched successfully.");
+        
       } catch (err) {
-        console.error(err)
+        showErrorToast("Failed to fetch orders.");
       }
     }
     const info = async()=>{
       try{
         const response = await getTheinformation()
-
         setResponse(response.data )
+        
       
       } catch (err) {
-        console.error(err)
+        showErrorToast("Failed to fetch dashboard information.");
       }    }
     info()
     fetchData()

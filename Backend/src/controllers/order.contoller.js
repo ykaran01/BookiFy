@@ -7,6 +7,8 @@ import Apiresponse from "../utilities/apiResponse.js";
 import { createAddress } from "../service/address.service.js";
 import { checking, changeInDb } from "../service/helper.service.js";
 import { clerkClient, createClerkClient } from "@clerk/express";
+import { sendMail } from "../service/email.service.js";
+ const  clerk = await createClerkClient({secretKey:process.env.CLERK_SECRET_KEY})  
 const orderController = asyncHandeler(async (req, res) => {
     const userId = req.user;
     const { shippingAddress, phoneNumber } = req.body;
@@ -26,10 +28,7 @@ const orderController = asyncHandeler(async (req, res) => {
         ...shippingAddress,
         user: userId,
     });
-    const  clerk = await createClerkClient({secretKey:process.env.CLERK_SECRET_KEY})
-        
-
-    
+     
     const user = await clerk.users.getUser(userId);
    
     const order = await orderModel.create({
@@ -46,6 +45,7 @@ const orderController = asyncHandeler(async (req, res) => {
 
     await cart.save();
     await changeInDb(order.item);
+    sendMail({OrderStatus:order.orderStatus,email:user.emailAddresses[0].emailAddress})
 
     return res.status(201).json(
         new ApiResponse(201, order, "Order placed successfully")
@@ -62,9 +62,11 @@ const changeOrderStatus = asyncHandeler(async (req, res) => {
     const order = await orderModel.findByIdAndUpdate(
         orderId,
         { orderStatus: status },
-        { returnDocument: "after" }
+       
 
     );
+    const user = await clerk.users.getUser(order.user);
+    sendMail({OrderStatus:order.orderStatus,email:user.emailAddresses[0].emailAddress})
 
     if (!order) {
         throw new ApiError(404, "Order not found");

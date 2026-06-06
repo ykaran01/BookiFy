@@ -8,6 +8,7 @@ import { CirclePlus } from 'lucide-react';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchCategory } from '@/Redux/features/CategorySlice';
+import { showSuccessToast, showErrorToast } from '@/helper/toast.helper.js';
 const Addproduct = () => {
     const navigate =  useNavigate()
     const categories = useSelector((state) => state.category.values)
@@ -41,7 +42,8 @@ const Addproduct = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!product.name || !product.price || !file || !product.category || !product.quantity) {
-            return
+            ShowErrorToast("Please fill in all required fields.");
+            return 
         }
         const formdata = new FormData();
         for (let key in product) {
@@ -52,13 +54,14 @@ const Addproduct = () => {
 
             setLoading(true);
             await addproduct(formdata);
+            showSuccessToast("Product added successfully.");
             setLoading(false);
             setFile(null);
             setProduct(initialFormState);
         } catch (error) {
             console.error("Failed to add product:", error);
             setLoading(false);
-
+            showErrorToast("Failed to add product.");
         }
     };
     return (

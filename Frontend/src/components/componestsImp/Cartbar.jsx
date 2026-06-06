@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { remove, increment, decrement } from '../../Redux/features/CartSlice'
 import { putelemtincart } from "./service/service";
 import { useNavigate } from "react-router-dom";
-
+import { showErrorToast } from "../../helper/toast.helper.js";
 export default function Example({ isOpen, onOpenChange }) {
     const navigate = useNavigate()
     const firstrender  = useRef(true)
@@ -29,7 +29,7 @@ export default function Example({ isOpen, onOpenChange }) {
 
     const incrementQuantity = (id, currentQty, maxStock) => {
         if (currentQty >= maxStock) {
-            alert("Cannot add more items. Stock limit reached!");
+            showErrorToast("Cannot add more items. Maximum stock limit reached.");
             return;
         }
         dispatch(increment(id))

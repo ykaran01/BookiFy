@@ -4,7 +4,7 @@ import {
   addCategory as addCategoryApi,
   deletecategory
 } from './service/service.js';
-
+import { showErrorToast, showSuccessToast } from '@/helper/toast.helper.js';
 import { fetchCategory } from '../../../Redux/features/CategorySlice.js';
 
 const Category = () => {
@@ -27,9 +27,12 @@ const Category = () => {
       setLoading(true);
       await addCategoryApi(category.trim());
       dispatch(fetchCategory());
-      setCategory('');
+      setCategory('')
+      showSuccessToast("Category added successfully.");
+      
     } catch (error) {
-      console.error('Error adding category:', error);
+     
+      showErrorToast("Failed to add category.");
     } finally {
       setLoading(false);
     }
@@ -40,8 +43,9 @@ const Category = () => {
       setLoading(true);
       await deletecategory(name);
       dispatch(fetchCategory());
+      showSuccessToast("Category deleted successfully.");
     } catch (error) {
-      console.error('Error deleting category:', error);
+      showErrorToast("Failed to delete category.");
     } finally {
       setLoading(false);
     }

@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
-import { Menu } from 'lucide-react';
 import { ShoppingCart } from 'lucide-react';
 import Cartbar from './Cartbar';
-import SearchBar from './Search';
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import {
   SignedIn,
