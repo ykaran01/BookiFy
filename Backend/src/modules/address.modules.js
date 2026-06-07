@@ -11,3 +11,10 @@ const addressSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 export const AddressModel = mongoose.model("Address", addressSchema);
+
+addressSchema.index(
+  { timestamps: 1 },
+  {
+    expireAfterSeconds: 25 * 24 * 60 * 60 * 1000,
+  }
+)

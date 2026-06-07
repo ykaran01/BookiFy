@@ -1,4 +1,6 @@
+
 import mongoose from "mongoose";
+
 
 const orderSchema = new mongoose.Schema({
     user: {
@@ -51,9 +53,30 @@ const orderSchema = new mongoose.Schema({
         type:Number,
         require:true,
     },
-
-    deliveredAt: Date
+   razorpayOrderId: String,
+    paymentStatus:{
+        type:String,
+        enum:["pending","done"]
+    },
+    createdAt:{
+        type:Date,
+        default:Date.now(),
+    
+    },
+    deliveredAt: Date,
+    
 
 });
 
 export const orderModel = mongoose.model("Order", orderSchema);
+
+
+orderSchema.index(
+    {createdAt:1},
+    {expireAfterSeconds:20*60*10,
+        partialFilterExpression:{
+            paymentStatus:"pending"
+        }
+
+    }
+);

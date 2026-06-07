@@ -29,7 +29,7 @@ export const putelemtincart = async (data) => {
         return response.data.data
 
     } catch (err) {
-        console.log(err.message)
+        throw err
     }
 }
 
@@ -45,12 +45,12 @@ export const userHistory = async()=>{
     }
 }
 
-export const search = async({query ,selectedCategory})=>{
+export const search = async({query ,selectedCategory ,sortOrder})=>{
     try{
         const response =  await API.get('/products/search',{
             params:{
                 category: selectedCategory,
-                
+                sortOrder: sortOrder || null,
                 query:query || null
                 }
             }
@@ -58,15 +58,7 @@ export const search = async({query ,selectedCategory})=>{
         return response.data.data;
         
     }catch(err){
-        console.log(err.message)
+       throw err
     }
 }
 
-export const placeorder = async(shippingAddress,phoneNumber)=>{
-    try{
-        const response =  await API.post('/order/place',{ shippingAddress,phoneNumber
-        })
-    }catch(err){
-        console.log(err.message)
-    }
-}

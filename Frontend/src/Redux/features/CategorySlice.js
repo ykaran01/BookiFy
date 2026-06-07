@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { useAuth } from '@clerk/clerk-react'
 import axios from 'axios'
 const API = axios.create({
     baseURL: import.meta.env.VITE_URL,
@@ -7,11 +6,11 @@ const API = axios.create({
 })
 export const fetchCategory = createAsyncThunk('fetchCategory',
     async () => {
-        try{
+        try {
             const response = await API.get('/category')
             const ans = response.data.data || []
             return ans
-        }catch(err){
+        } catch (err) {
             throw new Error(err.message)
         }
     }
@@ -47,6 +46,6 @@ export const CategorySlice = createSlice({
     }
 })
 
-export const {add, remove } = CategorySlice.actions
+export const { add, remove } = CategorySlice.actions
 
 export default CategorySlice.reducer

@@ -24,9 +24,7 @@ export const addProducts = asyncHandeler(async (req, res) => {
 
     if (!file || !name || !price || !description || !quantity || !category) {
         throw new ApiError(400, 'Missing required fields or file');
-    }
-    
-    
+    } 
     const uploader = await uploadOnCloudnary(file);
     
     const product = await productModule.create({
@@ -47,21 +45,28 @@ export const getProductsByCategory = asyncHandeler(async (req, res) => {
     res.status(200).json(new Apiresponse(200, products, 'Fetched products by category'));
 });
 export const searchProducts = asyncHandeler(async (req, res) => {
-    const { query, category } = req.query;
+    const { query, category ,sortOrder} = req.query;
     let filter = {};
     if (query && query!="null") {
         filter.$or = [
             { name: { $regex: query, $options: 'i' } },
             { description: { $regex: query, $options: 'i' } },
-           
+            {author: { $regex: query, $options: 'i' } }
         ];
+    }
+    let sort = {}
+    if(!sortOrder || sortOrder === 'null'){
+        sort.createdAt = 1;
+    }
+    else {
+        sort.price = Number(sortOrder)
     }
    
     if (category && category != 'null') {
         filter.category = category
     };
     
-    const products = await productModule.find(filter).populate('category');
+    const products = await productModule.find(filter).populate('category').sort(sort);
     
     res.status(200).json(new Apiresponse(200, products, 'Search results'));
 });

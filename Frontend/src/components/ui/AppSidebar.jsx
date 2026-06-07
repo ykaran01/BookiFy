@@ -33,7 +33,7 @@ export default function AppSidebar() {
       return;
     }
     const timer = setTimeout(async () => {
-      const data = await search({ sortOrder, selectedCategory, query })
+      const data = await search({ sortOrder, selectedCategory, query   })
       
       setbooks(data || [])
     }, 600)

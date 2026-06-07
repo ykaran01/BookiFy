@@ -8,7 +8,8 @@ import {
 import { useUser } from "@clerk/clerk-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { placeorder } from "../componestsImp/service/service";
+import { placeorder } from "../componestsImp/service/payment.service.js";
+import { showErrorToast } from "../../helper/toast.helper.js";
 
 const STATES = [
     "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa",
@@ -17,43 +18,50 @@ const STATES = [
     "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
     "Uttar Pradesh", "Uttarakhand", "West Bengal"
 ];
-import { showErrorToast } from "../../helper/toast.helper.js";
-const Dialogbox = async () => {
-    const user  =  useUser()
-    const name =  user.user.fullName
+
+
+const Dialogbox = () => {
+
+    const { isLoaded, user } = useUser();
     const navigate = useNavigate();
-    const [Address,setAddress] = useState({
-        street:"",
-        city:"",
-        state:"Uttar Pradesh",
-        pincode:"",
-        
-    })
-    const [phoneNumber,setPhoneNumber] = useState("")
+    
+    const [Address, setAddress] = useState({
+        street: "",
+        city: "",
+        state: "Uttar Pradesh",
+        pincode: "",
+    });
+    const [phoneNumber, setPhoneNumber] = useState("");
 
-    const handleChange  = (e)=>{
-        const {name,value} = e.target
-        setAddress({...Address, [name]:value})
+    
+    if (!isLoaded) {
+        return <div className="text-white text-center mt-10">Loading...</div>;
     }
-    const handleSubmit = async()=>{
-        try{
-            if(!Address.city || !Address.state || !Address.pincode || !Address.street){
-                showErrorToast('Please fill in all address fields.')
+
+    const name = user?.fullName || "Guest User";
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setAddress({ ...Address, [name]: value });
+    };
+
+    const handleSubmit = async () => {
+        try {
+            if (!Address.city || !Address.state || !Address.pincode || !Address.street) {
+                showErrorToast('Please fill in all address fields.');
                 return;
             }
-            if(!phoneNumber || phoneNumber.length!=10){
-                showErrorToast('Please enter a valid 10-digit phone number.')
+            if (!phoneNumber || phoneNumber.length !== 10) {
+                showErrorToast('Please enter a valid 10-digit phone number.');
                 return;
             }
+            await placeorder(Address, phoneNumber);
+            navigate('/')
             
-        await placeorder(Address,phoneNumber)
-       
-        }catch(err){
-            showErrorToast("Failed to place order. Please try again.")
+        } catch (err) {
+            showErrorToast("Failed to place order. Please try again.");
         }
-        
-    }
-
+    };
 
     return (
         <div className="w-screen h-screen bg-cover bg-center bg-[url('https://png.pngtree.com/background/20230524/original/pngtree-several-books-that-are-stacked-together-on-a-dark-black-background-picture-image_2714911.jpg')]" >
@@ -65,7 +73,6 @@ const Dialogbox = async () => {
                             Confirm Your Details
                         </DialogTitle>
                     </DialogHeader>
-
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
 
@@ -87,23 +94,19 @@ const Dialogbox = async () => {
                                 type="text"
                                 className="border border-zinc-800 rounded-md px-3 py-2 bg-zinc-900/50 text-white placeholder-zinc-500"
                                 placeholder="Enter the Street"
-                                onChange={(e)=>{
-                                    handleChange(e)
-                                }}
+                                onChange={handleChange}
                             />
                         </div>
 
                         <div className="flex flex-col">
                             <label className="text-xs md:text-sm font-medium text-zinc-400 mb-1">City</label>
                             <input
-                            value={Address.city}
+                                value={Address.city}
                                 name="city"
                                 type="text"
                                 className="border border-zinc-800 rounded-md px-3 py-2 bg-zinc-900/50 text-white placeholder-zinc-500"
                                 placeholder="Enter the City"
-                                onChange={(e)=>{
-                                    handleChange(e)
-                                }}
+                                onChange={handleChange}
                             />
                         </div>
 
@@ -113,10 +116,7 @@ const Dialogbox = async () => {
                                 value={Address.state}
                                 name="state"
                                 className="border border-zinc-800 rounded-md px-3 py-2.5 bg-zinc-900 text-white focus:border-green-500 "
-                                onChange={(e)=>{
-                                    handleChange(e)
-                                }}
-                                    
+                                onChange={handleChange}
                             >
                                 <option value="" disabled className="text-zinc-500">Select State</option>
                                 {STATES.map((item) => (
@@ -128,9 +128,7 @@ const Dialogbox = async () => {
                         <div className="flex flex-col">
                             <label className="text-xs md:text-sm font-medium text-zinc-400 mb-1">Pincode</label>
                             <input
-                                onChange={(e)=>{
-                                    handleChange(e)
-                                }}
+                                onChange={handleChange}
                                 value={Address.pincode}
                                 name="pincode"
                                 type="number"
@@ -142,18 +140,16 @@ const Dialogbox = async () => {
                         <div className="flex flex-col">
                             <label className="text-xs md:text-sm font-medium text-zinc-400 mb-1">Phone Number</label>
                             <input
-                            value={phoneNumber}
-                            onChange={(e)=>{
-                                setPhoneNumber(e.target.value)
-                            }}
+                                value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
                                 name="phoneNumber"
                                 type="number"
-
                                 className="border border-zinc-800 rounded-md px-3 py-2 bg-zinc-900/50 text-white placeholder-zinc-500"
                                 placeholder="Enter Phone Number"
                             />
                         </div>
                     </div>
+                    
                     <DialogFooter className="mt-6 flex flex-col-reverse sm:flex-row gap-3 sm:gap-2">
                         <button
                             type="button"
@@ -163,10 +159,8 @@ const Dialogbox = async () => {
                             Back
                         </button>
                         <button
-                        onClick={()=>{
-                            handleSubmit()
-                        }}
-                            type="submit"
+                            onClick={handleSubmit}
+                            type="button" // Changed to button since it's handled via onClick, not an actual form submit
                             className="w-full sm:w-2/3 text-white bg-blue-600 hover:bg-blue-500 active:scale-95 py-2.5 rounded-md text-base font-semibold transition-all cursor-pointer "
                         >
                             Continue

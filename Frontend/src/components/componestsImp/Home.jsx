@@ -51,7 +51,7 @@ export default function Home() {
         <div className="sticky top-0 z-50">
           <Navbar />
         </div>
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-8 "> 
 
           <section className="mb-12 min-h-full">
             <div className="w-full overflow-hidden rounded-2xl border border-zinc-800 shadow-2xl">
@@ -59,19 +59,19 @@ export default function Home() {
                 <img
                   src="main.png"
                   className="w-full h-auto cursor-pointer hover:scale-[1.01] transition duration-300 ease-in-out"
-                  alt="Book Fest"
+                  alt="Bookify - Your Ultimate Bookstore"
                 />
               </a>
             </div>
           </section>
 
-          <section id="books">
+          <section id="books  min-h-full"> 
             <div>
               <h2 className="w-full text-3xl flex justify-center text-white font-bold p-1 mb-6 border-b-2 border-orange-300">Featured Books</h2>
             </div>
             <div className="Boooks">
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 m-1.5 auto-rows-fr">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-6 m-1.5 ">
                 {books.map((book) => {
                   const cartItem = obook.find((item) => item._id === book._id);
                
@@ -181,7 +181,15 @@ export default function Home() {
             </div>
           </section>
         </main>
+        <footer className="bg-zinc-900 border-t border-zinc-800 py-6">
+        <div className="container mx-auto px-4">
+          <p className="text-center text-zinc-500 text-sm">
+            Developed by <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline"> ❤️ Karan Kumar Yadav</a>
+          </p>
+        </div>
+      </footer>
       </div>
+      
     </>
   );
 }

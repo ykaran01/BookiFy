@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { useSelector } from "react-redux"
-const Dropdown = ({selectedCategory ,setSelectedCategory}) => {
+const Dropdown = ({selectedCategory ,setSelectedCategory ,sortOrder ,setSortOrder}) => {
   const category = useSelector((state) => state.category.values)
   return (
     <DropdownMenu className="max-w-full bg-slate-700 outline-1 outline-white" >
@@ -32,13 +32,13 @@ const Dropdown = ({selectedCategory ,setSelectedCategory}) => {
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSub>
-          {/* <DropdownMenuSubTrigger>Price</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger>Price</DropdownMenuSubTrigger>
           <DropdownMenuSubContent className="bg-zinc-900 text-white border-zinc-700">
             <DropdownMenuRadioGroup value={sortOrder} onValueChange={setSortOrder}>
               <DropdownMenuRadioItem value="1">Low → High</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="">High → Low</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="-1">High → Low</DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent> */}
+          </DropdownMenuSubContent>
         </DropdownMenuSub>
       </DropdownMenuContent>
     </DropdownMenu>

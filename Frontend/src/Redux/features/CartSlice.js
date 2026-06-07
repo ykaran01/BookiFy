@@ -16,8 +16,6 @@ export const fetchCart = createAsyncThunk('featchCart',
                 stock : item.product.quantity,
                 quantity: item.quantity
             }));
-            console.log(ans);
-            
             return products
         } catch (err) {
             throw new Error(err.message)

@@ -1,22 +1,11 @@
-import nodemailer from 'nodemailer'
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,  
-  auth: {
-    user: process.env.ADMIN_EMAIL,
-    pass: process.env.PASS,
-  },
-});
-
+import { transporter } from "../config/email.config.js";
 export const sendMail = async({OrderStatus , email})=>{
     try {
-   
+      
   const info = await transporter.sendMail({
     from: process.env.ADMIN_EMAIL ,
     to: email, 
-    subject: "Reagarding To Your Order",  
+    subject: "  Message  Reagarding To Your Order",  
     html: MesssageObject[OrderStatus], 
   });
   

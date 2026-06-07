@@ -8,7 +8,9 @@ import { createAddress } from "../service/address.service.js";
 import { checking, changeInDb } from "../service/helper.service.js";
 import { clerkClient, createClerkClient } from "@clerk/express";
 import { sendMail } from "../service/email.service.js";
- const  clerk = await createClerkClient({secretKey:process.env.CLERK_SECRET_KEY})  
+import crypto from 'crypto';
+import  razorpay  from "../config/razorpay.config.js";
+const clerk = await createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY })
 const orderController = asyncHandeler(async (req, res) => {
     const userId = req.user;
     const { shippingAddress, phoneNumber } = req.body;
@@ -19,7 +21,7 @@ const orderController = asyncHandeler(async (req, res) => {
     if (cart.items.length === 0) {
         throw new ApiError(400, "Cart is empty");
     }
-    
+
     const isAvailable = await checking(cart.items);
     if (!isAvailable) {
         throw new ApiError(400, "Some products are not available in the requested quantity");
@@ -28,9 +30,7 @@ const orderController = asyncHandeler(async (req, res) => {
         ...shippingAddress,
         user: userId,
     });
-     
-    const user = await clerk.users.getUser(userId);
-   
+    const user = await clerk.users.getUser(req.user);
     const order = await orderModel.create({
         user: userId,
         username: user.fullName,
@@ -40,17 +40,45 @@ const orderController = asyncHandeler(async (req, res) => {
         phoneNumber: Number(phoneNumber),
         orderStatus: "pending",
     });
-    cart.items = [];
-    cart.totalPrice = 0;
+    const razorpayOrder = await razorpay.orders.create({
+        amount: cart.totalPrice * 100,
+        currency: 'INR',
+        receipt: order._id.toString()
 
+    })
+    order.razorpayOrderId = razorpayOrder.id
+    await order.save()
+    res.status(201).json(new ApiResponse(200, razorpayOrder, "payment Information  "))
+
+});
+
+const verify_payemt_order = asyncHandeler(async (req, res) => {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    const generatedSignature = crypto
+        .createHmac("sha256", process.env.RAZORPAY_SECRET_KEY)
+        .update(razorpay_order_id + "|" + razorpay_payment_id)
+        .digest("hex")
+    if (generatedSignature !== razorpay_signature) {
+        throw new ApiError(400, "payment is unsuccesfull")
+    }
+    const order = await orderModel.findOne({ razorpayOrderId: razorpay_order_id });
+    const cart = await cartModule.findOne({ user: req.user })
+    if (!order || !cart) {
+        throw new ApiError(404, "Data Not Found")
+    }
+    order.paymentStatus = 'done',
+        order.orderStatus = 'confirmed',
+        cart.items = [];
+    cart.totalPrice = 0;
     await cart.save();
     await changeInDb(order.item);
-    sendMail({OrderStatus:order.orderStatus,email:user.emailAddresses[0].emailAddress})
-
+    await order.save()
+    const user = await clerk.users.getUser(req.user);
+    sendMail({ OrderStatus: order.orderStatus, email: user.emailAddresses[0].emailAddress })
     return res.status(201).json(
-        new ApiResponse(201, order, "Order placed successfully")
+        new ApiResponse(201, null, "Order placed && Payment is successfull successfully")
     );
-});
+})
 const changeOrderStatus = asyncHandeler(async (req, res) => {
     const { orderId, status } = req.params;
     const validStatus = ["pending", "confirmed", "delivered", "cancelled"];
@@ -62,11 +90,11 @@ const changeOrderStatus = asyncHandeler(async (req, res) => {
     const order = await orderModel.findByIdAndUpdate(
         orderId,
         { orderStatus: status },
-       
+
 
     );
     const user = await clerk.users.getUser(order.user);
-    sendMail({OrderStatus:order.orderStatus,email:user.emailAddresses[0].emailAddress})
+    sendMail({ OrderStatus: order.orderStatus, email: user.emailAddresses[0].emailAddress })
 
     if (!order) {
         throw new ApiError(404, "Order not found");
@@ -80,7 +108,7 @@ const changeOrderStatus = asyncHandeler(async (req, res) => {
 
 const userOrderHistory = asyncHandeler(async (req, res) => {
     const userId = req.user
-    const orders = await orderModel.find({ user: userId }).populate("item.product").select("-shippingAddress -shippingFee -phoneNumber -_id");
+    const orders = await orderModel.find({ user: userId }).populate("item.product").select("-shippingAddress -shippingFee -phoneNumber -_id -paymentId ");
     res.status(200).json(
         new ApiResponse(200, orders, "User order history fetched")
     );
@@ -97,7 +125,7 @@ const getAllOrders = asyncHandeler(async (req, res) => {
 const getAll = asyncHandeler(async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
 
-    const orders = await orderModel.find().select("-shippingFee -user -item.product -phoneNumber -shippingAddress").skip((page-1)*limit || 0).limit(limit || 10).sort({ createdAt: -1 });
+    const orders = await orderModel.find().select("-shippingFee -user -item.product -phoneNumber -shippingAddress  -paymentId ").skip((page - 1) * limit || 0).limit(limit || 10).sort({ createdAt: -1 });
 
     if (orders.length == 0) {
         throw new ApiError(404, "Orders Not found");
@@ -123,5 +151,6 @@ export {
     userOrderHistory,
     getAllOrders,
     getAll,
-    getTheinformation
+    getTheinformation,
+    verify_payemt_order
 };
