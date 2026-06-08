@@ -9,7 +9,7 @@ import { checking, changeInDb } from "../service/helper.service.js";
 import { clerkClient, createClerkClient } from "@clerk/express";
 import { sendMail } from "../service/email.service.js";
 import crypto from 'crypto';
-import  razorpay  from "../config/razorpay.config.js";
+import razorpay from "../config/razorpay.config.js";
 const clerk = await createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY })
 const orderController = asyncHandeler(async (req, res) => {
     const userId = req.user;
@@ -67,8 +67,9 @@ const verify_payemt_order = asyncHandeler(async (req, res) => {
         throw new ApiError(404, "Data Not Found")
     }
     order.paymentStatus = 'done',
-        order.orderStatus = 'confirmed',
-        cart.items = [];
+    order.orderStatus = 'confirmed',
+    cart.items = [];
+    order.expiresAt = null;
     cart.totalPrice = 0;
     await cart.save();
     await changeInDb(order.item);

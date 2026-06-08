@@ -76,6 +76,8 @@ const Adminpanel = () => {
                 <th className='px-6 py-3'>Number of Items</th>
                 <th className='px-6 py-3'>Amount</th>
                 <th className='px-6 py-3'>Status</th>
+                <th className='px-6 py-3'>Date</th>
+
               </tr>
             </thead>
 
@@ -91,6 +93,7 @@ const Adminpanel = () => {
                       {item.orderStatus}
                     </span>
                   </td>
+                  <td> {new Date(item.createdAt).toDateString()}  </td>
                 </tr>
               ))}
              

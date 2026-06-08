@@ -63,20 +63,17 @@ const orderSchema = new mongoose.Schema({
         default:Date.now(),
     
     },
+    expiresAt: {
+    type: Date,
+    default: () => new Date(Date.now() + 20 * 60 * 1000),
+  },
     deliveredAt: Date,
     
 
 });
 
 export const orderModel = mongoose.model("Order", orderSchema);
-
-
 orderSchema.index(
-    {createdAt:1},
-    {expireAfterSeconds:20*60*10,
-        partialFilterExpression:{
-            paymentStatus:"pending"
-        }
-
-    }
+  { expiresAt: 1 },
+  { expireAfterSeconds: 0 }
 );
