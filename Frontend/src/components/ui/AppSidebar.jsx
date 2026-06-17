@@ -18,6 +18,7 @@ import { useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { search } from '../componestsImp/service/service.js'
 import {showErrorToast} from "../../helper/toast.helper.js"
+
 export default function AppSidebar() {
   const [books, setbooks] = useState([])
   const [sortOrder, setSortOrder] = useState(null)
@@ -32,11 +33,14 @@ export default function AppSidebar() {
 
       return;
     }
+    if(!query.trim()){
+      setbooks([])
+    }
     const timer = setTimeout(async () => {
-      const data = await search({ sortOrder, selectedCategory, query   })
+      const data = await search({ sortOrder, selectedCategory, query})
       
       setbooks(data || [])
-    }, 600)
+    }, 400)
     return () => clearTimeout(timer)
   }, [sortOrder, selectedCategory, query])
 
@@ -119,7 +123,9 @@ export default function AppSidebar() {
                   <div className="flex gap-3 items-center">
                 
                     <div className="relative w-14 min-w-[3.5rem] overflow-hidden rounded bg-zinc-900 border border-zinc-800">
-                      <img src={book.image} alt={book.name} className="h-full w-full object-cover" />
+                      <img onClick={()=>{
+                        navigate(`book/${book._id}`)
+                      }} src={book.image} alt={book.name} className="h-full w-full object-cover" />
                     </div>
 
                    
@@ -181,8 +187,6 @@ export default function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-
-      
       <SidebarFooter className="border-t border-zinc-800 p-3 bg-zinc-900 flex flex-col gap-1.5">
         <button 
           onClick={(e) => {

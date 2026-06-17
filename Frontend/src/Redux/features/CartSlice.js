@@ -9,8 +9,8 @@ const API = axios.create({
 export const fetchCart = createAsyncThunk('featchCart',
     async () => {
         try {
-            const response = await API.get('/cart/items',)
-            let ans = response.data.data.items || []
+            const {data} = await API.get('/cart/items',)
+            let ans = data.data.items || []
             const products = ans.map(item => ({
                 ...item.product,
                 stock : item.product.quantity,

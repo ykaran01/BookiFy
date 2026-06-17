@@ -12,6 +12,7 @@ import Addproduct from './components/componestsImp/Adminfolder/Addproduct.jsx'
 import AdminSidebarLayout from './components/componestsImp/Adminfolder/AdminSidebarLayout.jsx'
 import Category from './components/componestsImp/Adminfolder/Category.jsx'
 import ListingProducts from './components/componestsImp/Adminfolder/ListingProducts.jsx'
+import Bookprofile from './components/componestsImp/Bookprofile.jsx';
 const App = () => {
 
   return (
@@ -23,6 +24,7 @@ const App = () => {
           <SidebarLayout />
         } >
           <Route path='/' element={<Home  />} />
+          <Route path='/book/:id' element={<Bookprofile/>} />
         </Route>
         <Route path='/signin' element={<Signin/>} />
         <Route path='/signup' element={<Signup  />} />
@@ -33,7 +35,9 @@ const App = () => {
           <Route path='/category' element={<Category />} />
           <Route path='/products' element={<ListingProducts />} />
         </Route>
+        
         <Route path='/dialog' element={<Dialogbox />} />
+        
 
 
       </Routes>

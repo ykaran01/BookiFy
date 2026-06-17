@@ -21,8 +21,6 @@ const Navbar = () => {
         isOpen={isSidebarOpen}
         onOpenChange={setIsSidebarOpen}
       />
-
-
       <div className='max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between px-3 sm:px-5 py-2 sm:py-0 h-auto sm:h-16 gap-2 sm:gap-4'>
         <div className='flex items-center justify-between w-full sm:w-auto h-12 sm:h-auto'>
           <div className='flex items-center'>

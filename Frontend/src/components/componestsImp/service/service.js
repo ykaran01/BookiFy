@@ -62,3 +62,25 @@ export const search = async({query ,selectedCategory ,sortOrder})=>{
     }
 }
 
+export const bookById = async(id)=>{
+    try{
+        const {data} = await API.get(`/products/getproduct/${id}`);
+        return data.data
+    }catch(err){
+        console.log(err.message)
+    }
+   
+}
+
+export const addreview = async(comment,rating,id)=>{
+    try{
+         const {data} = API.post(`/review/${id}`,{comment,rating})
+    }
+    catch(err){
+        console.log(err.message)
+    }
+   
+
+}
+
+

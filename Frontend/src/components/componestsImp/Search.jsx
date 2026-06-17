@@ -15,7 +15,7 @@ export default function SearchBar({query ,setquery}) {
         type="text"
         placeholder="Search for books "
         className="outline-none  w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-full 
-                   text-sm placeholder-gray-400  text-black"
+        text-sm placeholder-gray-400  text-black"
       />
     </div>
   );

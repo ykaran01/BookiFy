@@ -16,6 +16,10 @@ const reviewSchema = new mongoose.Schema({
     comment:{
         type:String,
         required:true
+    },
+    username:{
+        type:String,
+
     }
 },{timestamps:true})
 export default mongoose.model("Review", reviewSchema)

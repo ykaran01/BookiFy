@@ -1,5 +1,5 @@
-import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetDescription, } from "@/components/ui/sheet";
-import { useEffect, useState ,useRef } from "react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, } from "@/components/ui/sheet";
+import { useEffect, useState, useRef } from "react";
 import { Trash } from 'lucide-react'
 import { useSelector, useDispatch } from 'react-redux'
 import { remove, increment, decrement } from '../../Redux/features/CartSlice'
@@ -8,19 +8,18 @@ import { useNavigate } from "react-router-dom";
 import { showErrorToast } from "../../helper/toast.helper.js";
 export default function Example({ isOpen, onOpenChange }) {
     const navigate = useNavigate()
-    const firstrender  = useRef(true)
+    const firstrender = useRef(true)
     const book = useSelector((state) => state.cart.value) || [];
-    
     const dispatch = useDispatch()
     useEffect(() => {
-        if(firstrender.current){
+        if (firstrender.current) {
             firstrender.current = false
             return;
         }
-        const timer = setTimeout(()=>{
-        putelemtincart(book)
-        },500)
-        return ()=> clearTimeout(timer)
+        const timer = setTimeout(() => {
+            putelemtincart(book)
+        }, 500)
+        return () => clearTimeout(timer)
     }, [book])
 
     const removeFromCart = (id) => {
@@ -38,9 +37,9 @@ export default function Example({ isOpen, onOpenChange }) {
     const decrementQuantity = (id) => {
         dispatch(decrement(id))
     }
-    
+
     const totalprice = book.reduce((total, item) => total + item.price * item.quantity, 0)
-        
+
     return (
         <Sheet open={isOpen} onOpenChange={onOpenChange}>
             <SheetContent side="right" className="bg-black text-white border-zinc-800">
@@ -53,8 +52,8 @@ export default function Example({ isOpen, onOpenChange }) {
                 <div className="flex flex-col flex-1 overflow-y-auto p-2 custom-scrollbar scrollContainer" >
                     <div>
                         {book.map((books) => {
-                            
-                            const maxAvailableStock = Number(books.stock) ;
+
+                            const maxAvailableStock = Number(books.stock);
                             const isMaxStockReached = books.quantity >= maxAvailableStock;
 
                             return (
@@ -91,12 +90,11 @@ export default function Example({ isOpen, onOpenChange }) {
                                                     value={books.quantity}
                                                     className="w-8 h-7 text-center outline-none font-semibold text-white pointer-events-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                                 />
-                                                <button 
-                                                    className={`w-8 h-7 flex items-center justify-center transition-colors ${
-                                                        isMaxStockReached 
-                                                            ? "text-zinc-600 cursor-not-allowed bg-zinc-800/40" 
+                                                <button
+                                                    className={`w-8 h-7 flex items-center justify-center transition-colors ${isMaxStockReached
+                                                            ? "text-zinc-600 cursor-not-allowed bg-zinc-800/40"
                                                             : "text-neutral-400 cursor-pointer hover:bg-zinc-800"
-                                                    }`} 
+                                                        }`}
                                                     disabled={isMaxStockReached}
                                                     onClick={(e) => {
                                                         e.preventDefault();
@@ -117,11 +115,11 @@ export default function Example({ isOpen, onOpenChange }) {
                     <div>
                         <p className=" text-green-500 font-bold mb-1">Total: ₹ {totalprice.toFixed(2)}</p>
                     </div>
-                    <button  onClick={(e)=>{
-                    e.preventDefault()
-                    navigate('/dialog')
-                    
-                    }}   className="w-full bg-orange-400 hover:bg-orange-500 py-2 outline-none text-xl rounded-2xl  text-white">Proceed to Checkout</button>
+                    <button onClick={(e) => {
+                        e.preventDefault()
+                        navigate('/dialog')
+
+                    }} className="w-full bg-orange-600 py-2 outline-none text-xl rounded-2xl  text-white">Proceed to Checkout</button>
                 </div>
 
             </SheetContent>
