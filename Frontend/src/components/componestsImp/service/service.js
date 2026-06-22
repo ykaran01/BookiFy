@@ -74,12 +74,24 @@ export const bookById = async(id)=>{
 
 export const addreview = async(comment,rating,id)=>{
     try{
-         const {data} = API.post(`/review/${id}`,{comment,rating})
+         const resonse = await  API.post(`/review/${id}`,{comment,rating})
+         console.log(resonse)
     }
     catch(err){
         console.log(err.message)
     }
    
+
+}
+
+export const getReviews = async(id)=>{
+    try{
+       
+        const {data}= await API.get(`/review/getreview/${id}`)
+        return data.data
+    }catch(err){
+        console.log(err.message)
+    }
 
 }
 

@@ -9,18 +9,17 @@ const API = axios.create({
 export const fetchCart = createAsyncThunk('featchCart',
     async () => {
         try {
-            const {data} = await API.get('/cart/items',)
+            const { data } = await API.get('/cart/items',)
             let ans = data.data.items || []
             const products = ans.map(item => ({
                 ...item.product,
-                stock : item.product.quantity,
+                stock: item.product.quantity,
                 quantity: item.quantity
             }));
             return products
         } catch (err) {
             throw new Error(err.message)
         }
- 
 
     }
 )

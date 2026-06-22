@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux'; // 1. Added Redux hooks
-import { increment, decrement, add, fetchCart } from '../../Redux/features/CartSlice'; // 2. Imported Cart Actions
-import { showErrorToast } from "../../helper/toast.helper.js"; // 3. Imported Toast Helper
+import { useSelector, useDispatch } from 'react-redux'; 
+import { increment, decrement, add, fetchCart } from '../../Redux/features/CartSlice'; 
+import { showErrorToast } from "../../helper/toast.helper.js";
 import { addreview, bookById } from './service/service';
 import Navbar from './Navbar';
+import Review from './Review';
 const Bookprofile = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
 
     const obook = useSelector((state) => state.cart.value) || [];
-    const [ratingnum, setratingnum] = useState(5)
+    
     const [book, setBook] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [comment, setComment] = useState("");
+   
 
 
     useEffect(() => {
@@ -34,20 +35,7 @@ const Bookprofile = () => {
         dispatch(fetchCart());
     }, [id, dispatch]);
 
-    const handleSubmit =  async()=>{
-        if(!comment){
-            showErrorToast("added Comment Also")
-            return 
-        }
-        try{
-             const resposne = await addreview(comment,ratingnum,id)
-             setComment("")
-        }
-        catch(err){
-            showErrorToast("Can't post The Review")
-        }
-       
-    }
+   
     const incrementQuantity = (bookId, currentQty, maxStock) => {
         if (currentQty >= maxStock) {
             showErrorToast("Cannot add more items. Maximum stock limit reached.");
@@ -77,7 +65,7 @@ const Bookprofile = () => {
             <div className="w-screen h-screen bg-zinc-900 flex justify-center items-center">
                 <h1 className="text-red-500 text-2xl">{error}</h1>
             </div>
-        );
+        )
     }
 
     if (!book) {
@@ -212,49 +200,7 @@ const Bookprofile = () => {
                 </div>
             </div>
 
-            <div className='Review flex  items-center p-6   justify-evenly gap-3'>
-                <div className='  bg-slate-950 text-white mt-2 shadow-xl flex flex-col border gap-5 w-120 border-white rounded-2xl p-4 '>
-                    <h1 className='text-xl font-medium'>Add Review</h1>
-                    <div className='text-3xl flex gap-2'>
-                        {
-                            [1, 2, 3, 4, 5].map((num) => (
-                                <button
-                                    className={(num <= ratingnum) ? 'text-orange-400 cursor-pointer' : 'text-zinc-600 cursor-pointer'}
-                                    value={num}
-                                    onClick={() => {
-                                        setratingnum(num)
-                                    }}
-                                >
-                                    ★
-                                </button>
-                            ))
-                        }
-                    </div>
-                    <textarea value={comment}
-                        onChange={(e) => setComment(e.target.value)} rows={5} className='border px-2 py-1' placeholder='Add Your Comments...' ></textarea>
-                    <button   
-                    onClick={handleSubmit}
-                    className='bg-orange-400 py-2 rounded-2xl '>Sumbit</button>
-                </div>
-                <div className='Comments w-160 h-[340px] overflow-y-auto '>
-                    <h1 className='text-2xl font-bold text-zinc-200 mb-7'>Comments</h1>
-                    <div className='w-full p-5 gap-2 rounded flex mb-6 bg-zinc-950 '>
-                        <div className='text-white tracking-tighter text-xs'>
-                            <h1 className='mb-1 text-sm text-blue-400'>Karan</h1>
-                            <p className='text-zinc-300'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Unde aliquid quis, ducimus doloribus nobis distinctio vitae facere rerum vel ab, cum voluptates? Consectetur, amet.</p>
-                        </div>
-
-                        <div className='text-orange-400 text-xl  flex gap-2' >★★★★★</div>
-                    </div>
-                    <div className='w-full p-5 gap-2 rounded flex  bg-zinc-950 '>
-                        <div className='text-white tracking-tighter text-xs'>
-                            <h1>Karan</h1>
-                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Unde aliquid quis, ducimus doloribus nobis distinctio vitae facere rerum vel ab, cum voluptates? Consectetur, amet.</p>
-                        </div>
-                        <div className='text-orange-400 text-xl  flex gap-2' >★★★★★</div>
-                    </div>
-                </div>
-            </div>
+            <Review id={id} />
         </div>
     );
 };
