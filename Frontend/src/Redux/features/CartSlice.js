@@ -7,9 +7,14 @@ const API = axios.create({
     withCredentials: true,
 })
 export const fetchCart = createAsyncThunk('featchCart',
-    async () => {
+    async (getToken) => {
         try {
-            const { data } = await API.get('/cart/items',)
+            const token =  await getToken()
+            const { data } = await API.get('/cart/items',{
+                 headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            })
             let ans = data.data.items || []
             const products = ans.map(item => ({
                 ...item.product,

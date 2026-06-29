@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { getorders } from "./service/service";
 import { changeOrderStatus } from "./service/service";
 import {showSuccessToast, showErrorToast} from "../../../helper/toast.helper.js"
+import { useAuth } from "@clerk/clerk-react";
 const Pending = () => {
+   const { getToken } = useAuth();
   const [orders, setOrders] = useState('');
   const [selectedStatus, setSelectedStatus] = useState("confirmed");
   const fetchOrders = async () => {
     try {
-      const data = await getorders();
+      const data = await getorders(getToken);
       setOrders(  data.data || []);
     } catch (err) {
       showErrorToast("Failed to fetch pending orders.");
@@ -23,7 +25,7 @@ const Pending = () => {
         showErrorToast("Please select a status to update.");
         return;
       }
-      await changeOrderStatus(orderId, newStatus)
+      await changeOrderStatus(orderId, newStatus,getToken)
       showSuccessToast("Order status updated successfully.");
       fetchOrders(); 
     } catch (err) {

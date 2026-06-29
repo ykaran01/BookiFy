@@ -10,8 +10,10 @@ import {
 } from '@clerk/clerk-react'
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'
+
 const Navbar = () => {
   const navigate = useNavigate()
+  
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const book = useSelector((state) => state.cart.value)
   let n = book.length || 0;

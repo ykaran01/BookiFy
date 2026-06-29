@@ -5,9 +5,14 @@ const API = axios.create({
     withCredentials: true,
 })
 export const fetchCategory = createAsyncThunk('fetchCategory',
-    async () => {
+    async (getToken) => {
         try {
-            const response = await API.get('/category')
+            const token = await getToken()
+            const response = await API.get('/category',{
+                 headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            })
             const ans = response.data.data || []
             return ans
         } catch (err) {

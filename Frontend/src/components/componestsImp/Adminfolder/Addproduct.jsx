@@ -9,7 +9,9 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchCategory } from '@/Redux/features/CategorySlice';
 import { showSuccessToast, showErrorToast } from '@/helper/toast.helper.js';
+import { useAuth } from "@clerk/clerk-react";
 const Addproduct = () => {
+     const { getToken } = useAuth();
     const navigate =  useNavigate()
     const categories = useSelector((state) => state.category.values)
     const [loading, setLoading] = useState(false);
@@ -23,7 +25,7 @@ const Addproduct = () => {
     };
      const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(fetchCategory());
+        dispatch(fetchCategory(getToken));
       }, [dispatch]);
 
     const [product, setProduct] = useState(initialFormState);
@@ -53,7 +55,7 @@ const Addproduct = () => {
         try {
 
             setLoading(true);
-            await addproduct(formdata);
+            await addproduct(formdata,getToken);
             showSuccessToast("Product added successfully.");
             setLoading(false);
             setFile(null);

@@ -12,10 +12,11 @@ import { fetchCart } from "../../Redux/features/CartSlice";
 import { fetchCategory } from "../../Redux/features/CategorySlice";
 import { showErrorToast } from "../../helper/toast.helper.js";
 import { useNavigate } from "react-router-dom";
-
+import { useAuth } from "@clerk/clerk-react";
 export default function Home() {
   const [books, setBooks] = useState([]);
   const navigate = useNavigate()
+   const { getToken } = useAuth();
   const obook = useSelector((state) => state.cart.value)
   const dispatch = useDispatch()
 
@@ -25,8 +26,8 @@ export default function Home() {
       setBooks(data);
     };
     loadProducts();
-    dispatch(fetchCart());
-    dispatch(fetchCategory());
+    dispatch(fetchCart(getToken));
+    dispatch(fetchCategory(getToken));
   }, [dispatch]);
 
   const incrementQuantity = (id, currentQty, maxStock) => {

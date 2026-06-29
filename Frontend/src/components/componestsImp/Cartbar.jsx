@@ -6,8 +6,10 @@ import { remove, increment, decrement } from '../../Redux/features/CartSlice'
 import { putelemtincart } from "./service/service";
 import { useNavigate } from "react-router-dom";
 import { showErrorToast } from "../../helper/toast.helper.js";
+import { useAuth } from "@clerk/clerk-react";
 export default function Example({ isOpen, onOpenChange }) {
     const navigate = useNavigate()
+     const { getToken } = useAuth();
     const firstrender = useRef(true)
     const book = useSelector((state) => state.cart.value) || [];
     const dispatch = useDispatch()
@@ -17,7 +19,7 @@ export default function Example({ isOpen, onOpenChange }) {
             return;
         }
         const timer = setTimeout(() => {
-            putelemtincart(book)
+            putelemtincart(book,getToken)
         }, 500)
         return () => clearTimeout(timer)
     }, [book])

@@ -7,15 +7,16 @@ import {
 } from "@/components/ui/sheet";
 import { useEffect, useState, Fragment } from "react";
 import { userHistory } from "./service/service";
-
+import { useAuth } from "@clerk/clerk-react";
 export default function OrderHistory({ isOpen, onOpenChange }) {
     const [book, setbook] = useState([]);
+     const { getToken } = useAuth();
 
     useEffect(() => {
         if (!isOpen) return;
 
         const userdata = async () => {
-            const data = await userHistory();
+            const data = await userHistory(getToken);
             setbook(data || []);
         };
         userdata();

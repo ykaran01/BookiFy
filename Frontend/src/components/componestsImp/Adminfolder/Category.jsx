@@ -6,8 +6,9 @@ import {
 } from './service/service.js';
 import { showErrorToast, showSuccessToast } from '@/helper/toast.helper.js';
 import { fetchCategory } from '../../../Redux/features/CategorySlice.js';
-
+import { useAuth } from "@clerk/clerk-react";
 const Category = () => {
+   const { getToken } = useAuth();
   const [category, setCategory] = useState('');
   const[loading,setLoading] = useState(false)
 
@@ -18,15 +19,15 @@ const Category = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchCategory());
+    dispatch(fetchCategory(getToken));
   }, [dispatch]);
 
   const handleAddCategory = async () => {
     if (!category.trim()) return;
     try {
       setLoading(true);
-      await addCategoryApi(category.trim());
-      dispatch(fetchCategory());
+      await addCategoryApi(category.trim(),getToken);
+      dispatch(fetchCategory(getToken));
       setCategory('')
       showSuccessToast("Category added successfully.");
       
@@ -41,8 +42,8 @@ const Category = () => {
   const handleDeleteCategory = async (name) => {
     try {
       setLoading(true);
-      await deletecategory(name);
-      dispatch(fetchCategory());
+      await deletecategory(name,getToken);
+      dispatch(fetchCategory(getToken));
       showSuccessToast("Category deleted successfully.");
     } catch (error) {
       showErrorToast("Failed to delete category.");

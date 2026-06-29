@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { addreview, getReviews } from './service/service'; 
-
+import { useAuth } from "@clerk/clerk-react";
 
 const Review = ({ id }) => {
-    
+     const { getToken } = useAuth(); 
     const [comment, setComment] = useState("");
     const [ratingnum, setratingnum] = useState(5);
     const [allReviews, setAllReviews] = useState([]);
@@ -16,7 +16,7 @@ const Review = ({ id }) => {
             setIsLoading(true);
             try {
 
-                const data = await getReviews(id);
+                const data = await getReviews(id,getToken);
                 setAllReviews(data || []);
             } catch (err) {
                 console.error("Failed to load reviews:", err);
@@ -35,7 +35,7 @@ const Review = ({ id }) => {
             return;
         }
         try {
-            const response = await addreview(comment, ratingnum, id);
+            const response = await addreview(comment, ratingnum, id,getToken);
 
             const newReviewObj = response?.data || {
                 _id: Date.now().toString(),

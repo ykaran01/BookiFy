@@ -4,13 +4,15 @@ import { getAllOrders } from './service/service.js'
 import { useEffect } from 'react'
 import { getTheinformation } from './service/service.js'
 import { showErrorToast, showSuccessToast } from '@/helper/toast.helper.js';
+import { useAuth } from "@clerk/clerk-react";
 const Adminpanel = () => {
+   const { getToken } = useAuth();
   const [response, setResponse] = React.useState([])
   const [info, setInfo] = React.useState([])
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response  =  await getAllOrders()
+        const response  =  await getAllOrders(getToken)
         setInfo(response)
         showSuccessToast("Orders fetched successfully.");
         
@@ -20,7 +22,7 @@ const Adminpanel = () => {
     }
     const info = async()=>{
       try{
-        const response = await getTheinformation()
+        const response = await getTheinformation(getToken)
         setResponse(response.data )
         
       

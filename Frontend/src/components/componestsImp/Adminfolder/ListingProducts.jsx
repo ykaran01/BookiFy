@@ -11,7 +11,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"; 
 import { showErrorToast, showSuccessToast } from '@/helper/toast.helper.js';
+import { useAuth } from "@clerk/clerk-react";
 const ListingProducts = () => {
+   const { getToken } = useAuth();
   const [books, setBooks] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedBookId, setSelectedBookId] = useState(null);
@@ -36,7 +38,7 @@ const ListingProducts = () => {
   }, []);
 
   const handleDelete = (id) => {
-    deleteProduct(id)
+    deleteProduct(id,getToken)
       .then(() => {
         setBooks(books.filter((items) => items._id !== id));
         showSuccessToast("Product deleted successfully.");
@@ -71,7 +73,7 @@ const ListingProducts = () => {
   const handleSaveSubmit = async (e) => {
     e.preventDefault();
     try {
-      await updateProduct(selectedBookId, editFormData);
+      await updateProduct(selectedBookId, editFormData,getToken);
       setIsOpen(false); 
       showSuccessToast("Product updated successfully.");
       window.location.reload()
