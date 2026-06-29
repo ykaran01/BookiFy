@@ -10,7 +10,7 @@ import {
 import Dropdown from "./Dropdown"
 import Orderbar from '../componestsImp/Orderbar'
 import { BookOpen, ShoppingBag, ShieldCheck } from 'lucide-react'
-import SearchBar from "../componestsimp/Search"
+import SearchBar from "../componestsImp/Search"
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux'
 import { increment, decrement, add } from '../../Redux/features/CartSlice'
