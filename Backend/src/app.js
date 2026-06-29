@@ -7,7 +7,10 @@ app.use(cookieParser())
 app.use(express.json());  
 app.use(express.urlencoded({ extended: true }))  
 app.use(cors({
-    origin:'http://localhost:5173',
+    origin: [
+        "http://localhost:5173",
+        process.env.CLIENT_URL
+    ],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'] 
 }))
