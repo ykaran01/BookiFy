@@ -1,56 +1,62 @@
 import { getAuth } from "@clerk/express";
 
-const requireAuth = async (req, res, next) => {
+const requireAuth = (req, res, next) => {
     try {
-       
-        const { userId } = getAuth(req);
+        const auth = getAuth(req);
 
-        if (!userId) {
+        console.log("Authorization Header:", req.headers.authorization);
+        console.log("Auth:", auth);
+
+        if (!auth.userId) {
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized: Invalid or missing token"
+                message: "Unauthorized",
             });
         }
 
-        req.user = userId;
+        req.user = auth.userId;
         next();
-    } catch (error) {
-        return res.status(401).json({
+    } catch (err) {
+        console.error(err);
+
+        return res.status(500).json({
             success: false,
-            message: "Authentication failed"
+            message: err.message,
         });
     }
 };
 
 const requireAdmin = async (req, res, next) => {
     try {
-        const { userId } = getAuth(req);
+        const auth = getAuth(req);
 
-        if (!userId) {
+        if (!auth.userId) {
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized"
+                message: "Unauthorized",
             });
         }
 
-        
-        const user = await req.clerkClient.users.getUser(userId);
-        const email = user?.emailAddresses?.[0]?.emailAddress;
+        const user = await req.clerkClient.users.getUser(auth.userId);
+
+        const email = user.emailAddresses?.[0]?.emailAddress;
 
         if (email !== process.env.ADMIN_EMAIL) {
             return res.status(403).json({
                 success: false,
-                message: "Forbidden: Admin access required"
+                message: "Admin access required",
             });
         }
 
-        req.user = userId;
-        next();
+        req.user = auth.userId;
 
+        next();
     } catch (err) {
+        console.error(err);
+
         return res.status(500).json({
             success: false,
-            message: err.message
+            message: err.message,
         });
     }
 };
