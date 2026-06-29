@@ -8,7 +8,7 @@ import {
   SidebarFooter
 } from "@/components/ui/sidebar"
 import Dropdown from "./Dropdown"
-import Orderbar from "../componestsimp/Orderbar";
+import Orderbar from '../componestsImp/Orderbar'
 import { BookOpen, ShoppingBag, ShieldCheck } from 'lucide-react'
 import SearchBar from "../componestsimp/Search"
 import { useEffect, useState } from "react";

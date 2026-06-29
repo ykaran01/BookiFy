@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'; 
 import { increment, decrement, add, fetchCart } from '../../Redux/features/CartSlice'; 
 import { showErrorToast } from "../../helper/toast.helper.js";
-import { addreview, bookById } from './service/service';
+import {  bookById } from './service/service';
 import Navbar from './Navbar';
 import Review from './Review';
 const Bookprofile = () => {
