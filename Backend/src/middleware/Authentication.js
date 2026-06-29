@@ -1,22 +1,23 @@
-import { getAuth, clerkClient } from "@clerk/express";
+import { getAuth } from "@clerk/express";
 
 const requireAuth = async (req, res, next) => {
     try {
+       
         const { userId } = getAuth(req);
 
         if (!userId) {
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized"
+                message: "Unauthorized: Invalid or missing token"
             });
         }
 
         req.user = userId;
         next();
     } catch (error) {
-        return res.status(500).json({
+        return res.status(401).json({
             success: false,
-            message: error.message
+            message: "Authentication failed"
         });
     }
 };
@@ -32,14 +33,14 @@ const requireAdmin = async (req, res, next) => {
             });
         }
 
-        const user = await clerkClient.users.getUser(userId);
-
+        
+        const user = await req.clerkClient.users.getUser(userId);
         const email = user?.emailAddresses?.[0]?.emailAddress;
 
         if (email !== process.env.ADMIN_EMAIL) {
             return res.status(403).json({
                 success: false,
-                message: "Admin required"
+                message: "Forbidden: Admin access required"
             });
         }
 
