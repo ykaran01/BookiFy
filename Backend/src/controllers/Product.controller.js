@@ -71,6 +71,7 @@ export const searchProducts = asyncHandeler(async (req, res) => {
     res.status(200).json(new Apiresponse(200, products, 'Search results'));
 });
 export const getProductById = asyncHandeler(async (req, res) => {
+    
     const product = await productModule.findById(req.params.id).populate('category');
     if (!product) throw new ApiError(404, 'Product Not Found');
     res.status(200).json(new Apiresponse(200, product, 'Product fetched'));

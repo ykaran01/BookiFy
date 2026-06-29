@@ -3,8 +3,8 @@ import cookieParser from 'cookie-parser';
 import { clerkMiddleware } from '@clerk/express';
 import cors from 'cors'
 const app = express()
-app.use(cookieParser())
-app.use(express.json());  
+ 
+
 app.use(express.urlencoded({ extended: true }))  
 app.use(cors({
     origin: "https://booki-fy-ivory.vercel.app",
@@ -12,6 +12,10 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'] 
 }))
 app.use(clerkMiddleware());
+app.use(cookieParser())
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
+
 
 
 import productRouter from './routers/product.router.js';

@@ -3,6 +3,7 @@ import { Router } from "express";
 import { upload } from "../middleware/multer.middleware.js";
 import { addProducts, deleteProduct, getAllProducts, getProductById, getProductsByCategory, searchProducts, updateProduct } from "../controllers/Product.controller.js";
 const productrouter = Router();
+
 productrouter.post('/add',  requireAdmin, upload.single('image'), addProducts)
 productrouter.put('/update/:id', requireAdmin, updateProduct);
 productrouter.get('/all', getAllProducts);
