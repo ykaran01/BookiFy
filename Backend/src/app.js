@@ -2,19 +2,24 @@ import express from 'express'
 import cookieParser from 'cookie-parser';
 import { clerkMiddleware } from '@clerk/express';
 import cors from 'cors'
-const app = express()
+
  
 
-app.use(express.urlencoded({ extended: true }))  
+  
+const app = express();
+
 app.use(cors({
     origin: "https://booki-fy-ivory.vercel.app",
-    credentials:true,
-    allowedHeaders: ['Content-Type', 'Authorization'] 
-}))
-app.use(clerkMiddleware());
-app.use(cookieParser())
-app.use(express.json()); 
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(cookieParser());
+
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(clerkMiddleware());
 
 
 
@@ -32,6 +37,13 @@ app.use('/api/category',categoryRouter)
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ success: true, message: 'Server is running' });
+});
+
+import { getAuth } from "@clerk/express";
+
+app.get("/test-auth", (req, res) => {
+    console.log(getAuth(req));
+    res.json(getAuth(req));
 });
 
 export default app
