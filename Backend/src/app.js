@@ -7,7 +7,7 @@ app.use(cookieParser())
 app.use(express.json());  
 app.use(express.urlencoded({ extended: true }))  
 app.use(cors({
-     origin: process.env.CLIENT_URL,
+    origin: "https://booki-fy-ivory.vercel.app",
     credentials:true,
     allowedHeaders: ['Content-Type', 'Authorization'] 
 }))
